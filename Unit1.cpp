@@ -45,25 +45,20 @@ void __fastcall TForm1::IdUDPServer1UDPRead(TIdUDPListenerThread *AThread, const
 {
   Podaci korisnik;
 	memcpy(&korisnik, AData.data(), sizeof(korisnik));
-
 	// Izračunavanje BMR-a
 	double bmr;
-
 	// Harris-Benedictova formula
 	if (korisnik.spol == 0) { // Muškarci
 		bmr = 66.4730 + (13.7516 * korisnik.tezina) + (5.0033 * korisnik.visina) - (6.7550 * korisnik.godine);
 	} else { // Žene
 		bmr = 655.0955 + (9.5634 * korisnik.tezina) + (1.8496 * korisnik.visina) - (4.6756 * korisnik.godine);
 	}
-
 	// Zaokruživanje BMR-a na jednu decimalu
 	double zaokruzenBMR = RoundTo(bmr, -1);
-
 	// Priprema podataka za slanje (samo BMR)
 	TIdBytes sendData;
 	sendData.Length = sizeof(zaokruzenBMR);
 	memcpy(sendData.data(), &zaokruzenBMR, sizeof(zaokruzenBMR));
-
 	// Slanje podataka klijentu
 	ABinding->SendTo(ABinding->PeerIP, ABinding->PeerPort, sendData);
 }
